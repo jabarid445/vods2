@@ -244,9 +244,9 @@ def ingest_csv_command(filename):
 
             num_vods += 1
             db.cursor().execute("""
-                              INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, vod_date)
-                              VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?);
-                              """, (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, vod_time,))
+                              INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, round, vod_date)
+                              VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?,     ?);
+                              """, (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, round, vod_time,))
     db.commit()
     click.echo(f"Ingested {num_vods} vods.")
 
@@ -336,8 +336,6 @@ def ingest_channel_command(channel_id, query, format):
             else:
                 c2 = prompt(f"c2 for {url}")
             event = info.group('event')
-
-
 
             click.echo(f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} vod_date={published_at} url={url}')
 
