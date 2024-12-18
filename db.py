@@ -52,6 +52,7 @@ def init_db():
         db.executescript(f.read().decode('utf8'))
 
 def get_character_id(name):
+    
     name = name.lower()
     # Ignore multiple characters for now.
     name = list(name.split(','))[0]
@@ -260,6 +261,8 @@ def review_submissions_command():
                 if response in ['y', 'yes']:
                     p1_id = ensure_player(p1)
                     p2_id = ensure_player(p2)
+                    c1_id = get_character_id(c1)
+                    c2_id = get_character_id(c2)
                     event_id = ensure_event(event)
 
                     db.cursor().execute('''
