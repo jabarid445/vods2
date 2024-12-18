@@ -223,7 +223,7 @@ def review_submissions_command():
                     info += f" date=\"{date_str}\""
                 click.echo(info)
             display_info(id, url, p1, c1, p2, c2, event, round, date_str)
-            action = input("Approve [A] Edit [E] Skip [S] Reject [R]: ")
+            action = input("Approve [A] Edit [E] Skip [S] Reject [R]: ").lower()
             if action == 'A':
                 event_id = ensure_event(event)
                 p1_id = ensure_player(p1)
