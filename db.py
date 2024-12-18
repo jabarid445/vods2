@@ -160,6 +160,28 @@ def search_vods(p1, p2, c1, c2, event, amount=100):
         ))
     return result
 
+def parse_date(str):
+    vod_parts = list(str.split('/'))
+    if vod_parts == 3:
+        try:
+            month = int(vod_parts[0])
+            day = int(vod_parts[1])
+            year = int('20' + vod_parts[2])
+        except Exception as e:
+            print(e)
+
+        return datetime(year, month, day)
+    elif vod_parts == 2:
+        try:
+            month = int(vod_parts[0])
+            day = int(vod_parts[1])
+            year = datetime.now().year
+        except Exception as e:
+            print(e)
+        return datetime(year, month, day)
+
+    return None
+
 # COMMANDS
 
 @click.command('init-db')
@@ -176,30 +198,43 @@ def init_db_command():
 @click.command('review-submissions')
 def review_submissions_command():
     db = get_db()
-    submissions = db.cursor().execute("SELECT id,url,p1,c1,p2,c2,round,event FROM submission WHERE status = ?;", (NOT_REVIEWED_STATUS,)).fetchall()
+    submissions = db.cursor().execute("SELECT id,url,p1,c1,p2,c2,round,event,date FROM submission WHERE status = ?;", (NOT_REVIEWED_STATUS,)).fetchall()
     click.echo(f"{len(submissions)} submissions to review.")
-    for (id,url,p1,c1,p2,c2,round,event) in submissions:
+    # TODO: Support dates.
+    for (id,url,p1,c1,p2,c2,round,event,date_str) in submissions:
         while True:
             # Build the info string.
-            info = f"ID={id} URL={url}"
-            if p1:
-                info += f" p1=\"{p1}"
-            if c1:
-                info += f" c1=\"{c1}"
-            if p2:
-                info += f" p2=\"{p2}"
-            if c2:
-                info += f" c2=\"{c2}"
-            if event:
-                info += f" event=\"{event}"
-            if round:
-                info += f" round=\"{round}"
-            click.echo(info)
+            def display_info(id, url, p1, c1, p2, c2, event, round, date_str):
+                info = f"ID={id} URL={url}"
+                if p1:
+                    info += f" p1=\"{p1}\""
+                if c1:
+                    info += f" c1=\"{c1}\""
+                if p2:
+                    info += f" p2=\"{p2}\""
+                if c2:
+                    info += f" c2=\"{c2}\""
+                if event:
+                    info += f" event=\"{event}\""
+                if round:
+                    info += f" round=\"{round}\""
+                if date_str:
+                    info += f" date=\"{date_str}\""
+                click.echo(info)
+            display_info(id, url, p1, c1, p2, c2, event, round, date_str)
             action = input("Approve [A] Edit [E] Skip [S] Reject [R]: ")
             if action == 'A':
+                event_id = ensure_event(event)
+                p1_id = ensure_player(p1)
+                p2_id = ensure_player(p2)
+                c1_id = get_character_id(c1) or ''
+                c2_id = get_character_id(c2) or ''
+                vod_date = parse_date(date_str) or None
                 db.cursor().execute('UPDATE submission SET status = ? WHERE id = ?;', (APPROVED_STATUS, id,))
-                # TODO: Insert.
-                db.cursor().execute('INSERT INTO vod ()')
+                db.cursor().execute('''
+                                    INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, round, vod_date)
+                                    VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?,     ?);''',
+                                    (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, round, vod_date.isoformat() if vod_date else ''))
                 db.commit()
                 break
             elif action == 'R':
@@ -211,13 +246,28 @@ def review_submissions_command():
             elif action == 'E':
                 url = prompt('URL', url)
                 p1 = prompt('Player 1', p1)
-                c1 = prompt('Char 1', p1)
-                p2 = prompt('Player 2', p1)
-                c2 = prompt('Char 2', p1)
-                event = prompt('Event', p1)
-                round = prompt('Round', p1)
+                c1 = prompt('Char 1', c1)
+                p2 = prompt('Player 2', p2)
+                c2 = prompt('Char 2', c2)
+                event = prompt('Event', event)
+                round = prompt('Round', round)
 
-                # TODO: Update.
+                date_str = prompt('Date (MM/DD/YY)', date_str)
+                vod_date = parse_date(date_str) or None
+
+                display_info(id, url, p1, c1, p2, c2, event, round, date_str)
+                response = input('Commit this to the database? [y/n] ')
+                if response in ['y', 'yes']:
+                    p1_id = ensure_player(p1)
+                    p2_id = ensure_player(p2)
+                    event_id = ensure_event(event)
+
+                    db.cursor().execute('''
+                        INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, round, vod_date)
+                        VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?,     ?);''',
+                        (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, round, vod_date.isoformat() if vod_date else ''))
+                    
+                    db.commit()
 
                 break
             else:

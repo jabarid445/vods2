@@ -7,7 +7,7 @@ import db
 app = Flask(__name__)
 db.init_app(app)
 
-def validate_submission_input(url, p1_char, p2_char, p1_tag, p2_tag, event, round):
+def validate_submission_input(url, p1_char, p2_char, p1_tag, p2_tag, event, round, date):
     if not url:
         return "Need a URL."
     if len(url) <= 0:
@@ -52,9 +52,10 @@ def vod_post():
     p2_tag = escape(request.form['p2_tag']) if 'p2_tag' in request.form else None
     event = escape(request.form['event']) if 'event' in request.form else None
     round = escape(request.form['round']) if 'round' in request.form else None
+    date = escape(request.form['date']) if 'date' in request.form else None
 
-    error = validate_submission_input(url, p1_char, p2_char, p1_tag, p2_tag, event, round)
+    error = validate_submission_input(url, p1_char, p2_char, p1_tag, p2_tag, event, round, date)
     if not error:
-        db.create_submission(url, p1_char, p2_char, p1_tag, p2_tag, event, round)
+        db.create_submission(url, p1_char, p2_char, p1_tag, p2_tag, event, round, date)
         return render_template('submission_success.jinja2')
     return render_template('submission_fail.jinja2')
