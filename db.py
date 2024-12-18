@@ -376,6 +376,28 @@ def ingest_channel_command(channel_id, query, format):
         click.echo('Aborting.')
         return
 
+@click.command('export-vods')
+@click.argument('filename')
+def export_vods_command(filename):
+    import csv
+
+    db = get_db()
+    vods = db.cursor().execute("""
+    SELECT vod.id, vod.url, p1.tag, p2.tag, c1.name, c2.name, e.name, vod.round, vod.vod_date
+    FROM vod
+        INNER JOIN event e ON e.id = vod.event_id
+        INNER JOIN player p1 ON p1.id = vod.p1_id
+        INNER JOIN player p2 ON p2.id = vod.p2_id
+        INNER JOIN game_character c1 ON c1.id = vod.c1_id
+        INNER JOIN game_character c2 ON c2.id = vod.c2_id
+    ORDER BY vod_date ASC
+    """, ()).fetchall()
+    with open(filename, 'w', newline='') as csvfile:
+        vod_writer = csv.writer(csvfile)
+        for id, url, p1_tag, p2_tag, c1_name, c2_name, event_name, round, vod_date in vods:
+            row = [url, p1_tag, c1_name, p2_tag, c2_name, event_name, round if round else '', vod_date if vod_date else '']
+            vod_writer.writerow(row)
+
 def prompt(text, default=None):
     value = input(f'{text} ' + (f'[{default}]' if default else '') + ': ')
     return value if value else default
@@ -391,3 +413,4 @@ def init_app(app):
     app.cli.add_command(review_submissions_command)
     app.cli.add_command(ingest_channel_command)
     app.cli.add_command(ingest_csv_command)
+    app.cli.add_command(export_vods_command)
