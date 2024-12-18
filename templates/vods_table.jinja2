@@ -1,0 +1,48 @@
+<form action="/search">
+<table class="searchtable">
+  <tr>
+    <td>
+      <select id="c1_search" name="c1">
+        <option value="any" {% if not c1 %} selected="selected" {% endif %} >Any</option>
+        <option value="clairen" {% if c1 == 'clairen' %} selected="selected" {% endif %}>Clairen</option>
+        <option value="fleet" {% if c1 == 'fleet' %} selected="selected" {% endif %} >Fleet</option>
+        <option value="forsburn" {% if c1 == 'forsburn' %} selected="selected" {% endif %}>Forsburn</option>
+        <option value="loxodont" {% if c1 == 'loxodont' %} selected="selected" {% endif %}>Loxodont</option>
+        <option value="maypul" {% if c1 == 'maypul' %} selected="selected" {% endif %}>Maypul</option>
+        <option value="orcane" {% if c1 == 'orcane' %} selected="selected" {% endif %}>Orcane</option>
+        <option value="ranno" {% if c1 == 'ranno' %} selected="selected" {% endif %}>Ranno</option>
+        <option value="wrastor" {% if c1 == 'wrastor' %} selected="selected" {% endif %}>Wrastor</option>
+        <option value="zetterburn" {% if c1 == 'zetterburn' %} selected="selected" {% endif %}>Zetterburn</option>
+      </select>
+    </td>
+    <td><p>vs.</p></td>
+    <td>
+      <select id="c2_search" name="c2">
+        <option value="any" {% if not c2 %} selected="selected" {% endif %} >Any</option>
+        <option value="clairen" {% if c2 == 'clairen' %} selected="selected" {% endif %}>Clairen</option>
+        <option value="fleet" {% if c2 == 'fleet' %} selected="selected" {% endif %} >Fleet</option>
+        <option value="forsburn" {% if c2 == 'forsburn' %} selected="selected" {% endif %}>Forsburn</option>
+        <option value="loxodont" {% if c2 == 'loxodont' %} selected="selected" {% endif %}>Loxodont</option>
+        <option value="maypul" {% if c2 == 'maypul' %} selected="selected" {% endif %}>Maypul</option>
+        <option value="orcane" {% if c2 == 'orcane' %} selected="selected" {% endif %}>Orcane</option>
+        <option value="ranno" {% if c2 == 'ranno' %} selected="selected" {% endif %}>Ranno</option>
+        <option value="wrastor" {% if c2 == 'wrastor' %} selected="selected" {% endif %}>Wrastor</option>
+        <option value="zetterburn" {% if c2 == 'zetterburn' %} selected="selected" {% endif %}>Zetterburn</option>
+      </select>
+    </td>
+    <td><input type="text" id="p1_search" name="p1" placeholder="Tag" autocomplete="off" {% if p1 %} value="{{p1}}" {% endif %}/></td>
+    <td><input type="text" id="p2_search" name="p2" placeholder="Tag" autocomplete="off" {% if p2 %} value="{{p2}}" {% endif %}/></td>
+    <td><label>Min ELO: </label><input type="range" id="low_elo_search" name="min_elo" min="0" max="3000" value="0" oninput="this.nextElementSibling.value = this.value"><output>0</output></td>
+    <td><label>Max ELO: </label><input type="range" id="high_elo_search" name="max_elo" min="0" max="3000" value="3000" oninput="this.nextElementSibling.value = this.value"><output>3000</output></td>
+    <td><input type="text" id="event_search" name="event" placeholder="Event" autocomplete="off" {% if event %} value="{{event}}" {% endif %}/></td>
+  </tr>
+</table>
+<input type="submit" value="Search"/>
+</form>
+
+<table class="vodtable">
+  <tr><th style="width:20%">Date</th><th>Match</th><th>Event</th></tr>
+  {% for vod in vods %}
+  <tr><td>{{vod.vod_date.strftime("%m/%d/%y") if vod.vod_date else ''}}</td><td><span><a href="{{vod.url}}"><img src="{{vod.c1_icon_url}}" width="24" height="24"/> {{vod.p1_tag}} vs. <img src="{{vod.c2_icon_url}}" width="24" height="24"/> {{vod.p2_tag}}</a></span></td><td>{{vod.event_name}} {% if vod.round %} ({{vod.round}}) {% endif %}</td></tr>
+  {% endfor %}
+</table>

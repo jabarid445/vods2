@@ -1,0 +1,111 @@
+<!doctype html>
+<head>
+<title>Rivals 2 VODS</title>
+<style>
+body {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+table, th, td {
+  border:none;
+  text-align: left;
+}
+
+.vodtable {
+  border: 1px solid black;
+  text-align: left;
+}
+
+.vodtable th, .vodtable td {
+  border: 1px solid black;
+}
+
+.searchtable {
+  border: none;
+}
+
+.searchtable input {
+  width: 100px;
+}
+
+</style>
+</head>
+
+<body>
+<h1>Submit a VOD</h1>
+
+<form action="/submission" method="post">
+<label for="url">URL (Twitch or YouTube): </label> <input id="url" name="url" type="text" size="60"/>
+<p>Playlists are allowed.</p>
+<details open>
+<summary>Details (optional):</summary>
+<table style="text-align: left;">
+<tr>
+  <td>
+    <label>P1 Character: </label>
+    <select id="p1_character" name="p1_character">
+      <option value="none" selected="selected">None</option>
+      <option value="clairen">Clairen</option>
+      <option value="fleet">Fleet</option>
+      <option value="forsburn">Forsburn</option>
+      <option value="loxodont">Loxodont</option>
+      <option value="maypul">Maypul</option>
+      <option value="orcane">Orcane</option>
+      <option value="ranno">Ranno</option>
+      <option value="wrastor">Wrastor</option>
+      <option value="zetterburn">Zetterburn</option>
+    </select>
+  </td>
+  <td>
+    <label>Tag: </label>
+    <input type="text" name="p1_tag" autocomplete="off"/>
+  </td>
+  <td>
+    <label>ELO: </label>
+    <input type="text" name="p1_elo" autocomplete="off"/>
+  </td>
+</tr>
+<tr>
+  <td>
+    <label>P2 Character: </label>
+    <select id="p2_character" name="p2_character">
+      <option value="none" selected="selected">None</option>
+      <option value="clairen">Clairen</option>
+      <option value="fleet">Fleet</option>
+      <option value="forsburn">Forsburn</option>
+      <option value="loxodont">Loxodont</option>
+      <option value="maypul">Maypul</option>
+      <option value="orcane">Orcane</option>
+      <option value="ranno">Ranno</option>
+      <option value="wrastor">Wrastor</option>
+      <option value="zetterburn">Zetterburn</option>
+    </select>
+  </td>
+  <td>
+    <label>Tag: </label>
+    <input type="text" name="p2_tag" autocomplete="off" />
+  </td>
+  <td>
+    <label>ELO: </label>
+    <input type="text" name="p2_elo" autocomplete="off" />
+  </td>
+</tr>
+<tr>
+  <td><label>Event: </label></td>
+  <td><input type="text" name="event" autocomplete="off" /></td>
+</tr>
+<tr>
+  <td><label>Round: </label></td>
+  <td><input type="text" name="round" autocomplete="off" /></td>
+</tr>
+</table>
+</details>
+<input type="submit" value="Submit VOD"/>
+</form>
+
+<h1>VODS</h1>
+
+{% include "vods_table.jinja2" %}
+
+</body>

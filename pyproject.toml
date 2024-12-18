@@ -1,0 +1,10 @@
+[project]
+name = "vods2"
+version = "0.1.0"
+description = "Rivals of Aether 2 VODs."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.1.7",
+    "flask>=3.1.0",
+]
