@@ -224,7 +224,7 @@ def review_submissions_command():
                 click.echo(info)
             display_info(id, url, p1, c1, p2, c2, event, round, date_str)
             action = input("Approve [A] Edit [E] Skip [S] Reject [R]: ").lower()
-            if action == 'A':
+            if action == 'a':
                 event_id = ensure_event(event)
                 p1_id = ensure_player(p1)
                 p2_id = ensure_player(p2)
@@ -238,13 +238,13 @@ def review_submissions_command():
                                     (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, round, vod_date.isoformat() if vod_date else ''))
                 db.commit()
                 break
-            elif action == 'R':
+            elif action == 'r':
                 db.cursor().execute('UPDATE submission SET status = ? WHERE id = ?;', (REJECTED_STATUS, id,))
                 db.commit()
                 break
-            elif action == 'S':
+            elif action == 's':
                 break
-            elif action == 'E':
+            elif action == 'e':
                 url = prompt('URL', url)
                 p1 = prompt('Player 1', p1)
                 c1 = prompt('Char 1', c1)
