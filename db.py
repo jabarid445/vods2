@@ -351,8 +351,6 @@ def ingest_channel_command(channel_id, query, format):
     db = get_db()
 
     def ingest_page(page):
-        global num_vods
-
         items = page.get('items')
         if not items:
             return 0
@@ -411,6 +409,7 @@ def ingest_channel_command(channel_id, query, format):
                               INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, vod_date)
                               VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?);
                               """, (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, published_at,))
+        
         return num_vods
 
     
@@ -419,6 +418,8 @@ def ingest_channel_command(channel_id, query, format):
     while page.get('nextPageToken'):
         page = get_page(page['nextPageToken'])
         num_vods += ingest_page(page)
+    
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "0"
 
     response = input(f'Are you sure you want to commit {num_vods} VODs? [y/n] ')
     if response in ['y', 'yes']:
