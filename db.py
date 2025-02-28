@@ -339,12 +339,12 @@ def ingest_channel_command(channel_id, query, format):
         return request.execute()
 
     format_regex_str = (re.escape(format)
-                    .replace('%E', '(?P<event>[\s*\(*\s*\w\)*]+)')
+                    .replace('%E', '(?P<event>[\s*\(*\s*\w~\)*]+)')
                     .replace('%R', '(?P<round>[\s*\(*\s*\w\)*]+)')
-                    .replace('%P1', '(?P<p1>[\s*\w]+)')
-                    .replace('%P2', '(?P<p2>[\s*\w]+)')
-                    .replace('%C1', '(?P<c1>\w+,*)')
-                    .replace('%C2', '(?P<c2>\w+,*)'))
+                    .replace('%P1', '(?P<p1>[\s*\w\$|&;~!?#.]+)')
+                    .replace('%P2', '(?P<p2>[\s*\w\$|&;~!?#.]+)')
+                    .replace('%C1', '(?P<c1>[\s*\w,*]+)')
+                    .replace('%C2', '(?P<c2>[\s*\w,*]+)'))
     print(format_regex_str)
     format_regex = re.compile(format_regex_str)
 
@@ -378,18 +378,16 @@ def ingest_channel_command(channel_id, query, format):
 
             c1 = None
             if info.groupdict().get('c1'):
-                c1 = info.group('c1').lower()
+                c1 = info.group('c1').lower().split(',')[0].replace('P1 ', '').replace('P2 ', '')
             else:
                 c1 = prompt(f"c1 for {url}")
             c2 = None
             if info.groupdict().get('c2'):
-                c2 = info.group('c2').lower()
+                c2 = info.group('c2').lower().split(',')[0].replace('P1 ', '').replace('P2 ', '')
             else:
                 c2 = prompt(f"c2 for {url}")
             event = info.group('event')
             round = info.groupdict().get('round') or ''
-
-            click.echo(f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} round={round} vod_date={published_at} url={url}')
 
             # TODO: Parse round name info.
             event_id = ensure_event(event)
@@ -404,6 +402,8 @@ def ingest_channel_command(channel_id, query, format):
             if not c2_id:
                 # click.echo(f"Unknown character {c2} for {url}, skipping VOD.")
                 continue
+
+            click.echo(f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} round={round} vod_date={published_at} url={url}')
 
             num_vods += 1
             db.cursor().execute("""
