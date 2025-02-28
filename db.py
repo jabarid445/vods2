@@ -387,8 +387,9 @@ def ingest_channel_command(channel_id, query, format):
             else:
                 c2 = prompt(f"c2 for {url}")
             event = info.group('event')
+            round = info.group('round') or ''
 
-            click.echo(f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} vod_date={published_at} url={url}')
+            click.echo(f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} round={round} vod_date={published_at} url={url}')
 
             # TODO: Parse round name info.
             event_id = ensure_event(event)
