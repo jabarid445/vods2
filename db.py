@@ -387,7 +387,7 @@ def ingest_channel_command(channel_id, query, format):
             else:
                 c2 = prompt(f"c2 for {url}")
             event = info.group('event')
-            round = info.group('round') or ''
+            round = info.groupdict().get('round') or ''
 
             click.echo(f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} round={round} vod_date={published_at} url={url}')
 
@@ -407,9 +407,9 @@ def ingest_channel_command(channel_id, query, format):
 
             num_vods += 1
             db.cursor().execute("""
-                              INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, vod_date)
-                              VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?);
-                              """, (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, published_at,))
+                              INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, vod_date, round)
+                              VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?,        ?);
+                              """, (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, published_at, round,))
         
         return num_vods
 
