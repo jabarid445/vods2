@@ -15,7 +15,8 @@ CHAR_NAME_TO_ID = {
     "kragg": 7,
     "wrastor": 8,
     "loxodont": 9,
-    "maypul": 10
+    "maypul": 10,
+    "etalus": 11
 }
 
 # STATUS VALUES
@@ -339,11 +340,11 @@ def ingest_channel_command(channel_id, query, format):
         return request.execute()
 
     format_regex_str = (re.escape(format)
-                    .replace('%E', '(?P<event>[\s*\(*\s*\w~#\)*]+)')
+                    .replace('%E', '(?P<event>[\s*\(*\s*\w~#&;\)*]+)')
                     .replace('%P1', '(?P<p1>[\s*\w\$|&;~!?#.]+)')
                     .replace('%P2', '(?P<p2>[\s*\w\$|&;~!?#.]+)')
-                    .replace('%C1', '(?P<c1>[\s*\w,*]+)')
-                    .replace('%C2', '(?P<c2>[\s*\w,*]+)')
+                    .replace('%C1', '(?P<c1>[\s*\w/*,*]+)')
+                    .replace('%C2', '(?P<c2>[\s*\w/*,*]+)')
                     .replace('%V', '((vs.)|(vs)|(Vs.)|(VS.))')
                     .replace('%ROA', '((RoA2)|(ROA2)|(Rivals II)|(Rivals 2)|(Rivals of Aether 2)|(Rivals of Aether II)|(Rivals II Bracket)|(Rivals 2 Bracket))?')
                     .replace('%R', '(?P<round>[\s*\(*\s*\w\)*]+)'))
@@ -380,12 +381,12 @@ def ingest_channel_command(channel_id, query, format):
 
             c1 = None
             if info.groupdict().get('c1'):
-                c1 = info.group('c1').lower().split(',')[0].replace('P1 ', '').replace('P2 ', '')
+                c1 = info.group('c1').lower().split(',')[0].split('/')[0].replace('P1 ', '').replace('P2 ', '')
             else:
                 c1 = prompt(f"c1 for {url}")
             c2 = None
             if info.groupdict().get('c2'):
-                c2 = info.group('c2').lower().split(',')[0].replace('P1 ', '').replace('P2 ', '')
+                c2 = info.group('c2').lower().split(',')[0].split('/')[0].replace('P1 ', '').replace('P2 ', '')
             else:
                 c2 = prompt(f"c2 for {url}")
             event = info.group('event')
