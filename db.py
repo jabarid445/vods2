@@ -346,7 +346,7 @@ def ingest_channel_command(channel_id, query, format):
                     .replace('%P2', '(?P<p2>[\s*\w\$|&;~!?#.]+)')
                     .replace('%C1', '(?P<c1>[\s*\w/*,*]+)')
                     .replace('%C2', '(?P<c2>[\s*\w/*,*]+)')
-                    .replace('%V', '((vs.)|(vs)|(Vs.)|(VS.))')
+                    .replace('%V', '((vs.)|(vs)|(Vs.)|(VS.)|(Vs)|(VS))')
                     .replace('%ROA', '((RoA2)|(ROA2)|(Rivals II)|(Rivals 2)|(Rivals of Aether 2)|(Rivals of Aether II)|(Rivals II Bracket)|(Rivals 2 Bracket))?')
                     .replace('%R', '(?P<round>[\s*\(*\s*\w\-\)*]+)'))
     print(format_regex_str)
