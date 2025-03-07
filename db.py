@@ -340,14 +340,15 @@ def ingest_channel_command(channel_id, query, format):
         return request.execute()
 
     format_regex_str = (re.escape(format)
-                    .replace('%E', '(?P<event>[\s*\(*\s*\w~#&;\)*]+)')
+                    .replace('%SIDE', '(([\s*W\s*])|([\s*L\s*]))')
+                    .replace('%E', '(?P<event>[\s*#*\(*\s*\w~#&;\)*]+)')
                     .replace('%P1', '(?P<p1>[\s*\w\$|&;~!?#.]+)')
                     .replace('%P2', '(?P<p2>[\s*\w\$|&;~!?#.]+)')
                     .replace('%C1', '(?P<c1>[\s*\w/*,*]+)')
                     .replace('%C2', '(?P<c2>[\s*\w/*,*]+)')
                     .replace('%V', '((vs.)|(vs)|(Vs.)|(VS.))')
                     .replace('%ROA', '((RoA2)|(ROA2)|(Rivals II)|(Rivals 2)|(Rivals of Aether 2)|(Rivals of Aether II)|(Rivals II Bracket)|(Rivals 2 Bracket))?')
-                    .replace('%R', '(?P<round>[\s*\(*\s*\w\)*]+)'))
+                    .replace('%R', '(?P<round>[\s*\(*\s*\w\-\)*]+)'))
     print(format_regex_str)
     format_regex = re.compile(format_regex_str)
 
@@ -365,13 +366,15 @@ def ingest_channel_command(channel_id, query, format):
                 continue
             video_id = item['id']['videoId']
             url = f"https://www.youtube.com/watch?v={video_id}"
-            existing_vod = db.cursor().execute("SELECT id from vod WHERE url = ? LIMIT 1;", (url,)).fetchone()
-            if existing_vod:
-                # click.echo(f'{title} is already in the database, skipping VOD.')
-                continue
             snippet = item['snippet']
             published_at = snippet['publishedAt']
             title = snippet['title']
+
+            existing_vod = db.cursor().execute("SELECT id from vod WHERE url = ? LIMIT 1;", (url,)).fetchone()
+            if existing_vod:
+                click.echo(f'{title} is already in the database, skipping VOD.')
+                continue
+
             info = format_regex.match(title.strip())
             if not info:
                 click.echo(f'{title} did not match regex, skipping VOD.')
@@ -389,7 +392,7 @@ def ingest_channel_command(channel_id, query, format):
                 c2 = info.group('c2').lower().split(',')[0].split('/')[0].replace('P1 ', '').replace('P2 ', '')
             else:
                 c2 = prompt(f"c2 for {url}")
-            event = info.group('event')
+            event = info.groupdict().get('event') or 'Unknown'
             round = info.groupdict().get('round') or ''
 
             # TODO: Parse round name info.
@@ -448,7 +451,7 @@ def export_vods_command(filename):
         INNER JOIN game_character c2 ON c2.id = vod.c2_id
     ORDER BY vod_date ASC
     """, ()).fetchall()
-    with open(filename, 'w', newline='') as csvfile:
+    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
         vod_writer = csv.writer(csvfile)
         for id, url, p1_tag, p2_tag, c1_name, c2_name, event_name, round, vod_date in vods:
             row = [url, p1_tag, c1_name, p2_tag, c2_name, event_name, round if round else '', vod_date if vod_date else '']
