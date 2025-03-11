@@ -32,10 +32,19 @@ table, th, td {
   width: 100px;
 }
 
+.searchtable p {
+  margin: 0;
+}
+
 </style>
 </head>
 
 <body>
+
+<h1>Recent VODS</h1>
+
+{% include "vods_table.jinja2" %}
+
 <h1>Submit a VOD</h1>
 
 <form action="/submission" method="post">
@@ -114,9 +123,5 @@ table, th, td {
 </details>
 <input type="submit" value="Submit VOD"/>
 </form>
-
-<h1>VODS</h1>
-
-{% include "vods_table.jinja2" %}
 
 </body>
