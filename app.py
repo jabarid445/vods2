@@ -3,9 +3,20 @@ from markupsafe import escape
 from urllib.parse import urlparse
 
 import db
+from models import Channel
 
 app = Flask(__name__)
 db.init_app(app)
+
+def get_channels():
+    channels = []
+    with open('data/channel_ids.txt') as f:
+        for line in f.readlines():
+            url, rest = line.split(': ')
+            _, name = rest.split(' ')[0], rest.split(' ')[1:]
+            name = ' '.join(name)
+            channels.append(Channel(url=url, name=name))
+    return channels
 
 def validate_submission_input(url, p1_char, p2_char, p1_tag, p2_tag, event, round, date):
     if not url:
@@ -20,7 +31,7 @@ def validate_submission_input(url, p1_char, p2_char, p1_tag, p2_tag, event, roun
 @app.route("/")
 def home_page():
     latest_vods = list(db.latest_vods())
-    return render_template("home.jinja2", vods=latest_vods)
+    return render_template("home.jinja2", vods=latest_vods, channels=get_channels())
 
 @app.route("/search")
 def search_page():
@@ -36,7 +47,7 @@ def search_page():
 
     search_results = list(db.search_vods(p1, p2, c1, c2, event))
 
-    return render_template("search.jinja2", vods=search_results, c1=c1, c2=c2, p1=p1, p2=p2, event=event)
+    return render_template("search.jinja2", vods=search_results, c1=c1, c2=c2, p1=p1, p2=p2, event=event, channels=get_channels())
 
 
 @app.post("/submission")

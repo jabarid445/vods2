@@ -11,3 +11,8 @@ class Vod:
     c2_icon_url: str
     round: str
     vod_date: datetime
+
+@dataclass
+class Channel:
+    url: str
+    name: str
