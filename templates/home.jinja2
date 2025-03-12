@@ -2,40 +2,7 @@
 <head>
 <title>Rivals 2 VODS</title>
 <style>
-body {
-  margin-top: 20px;
-  margin-left: 20px;
-  background-color: Canvas;
-  color: CanvasText;
-  color-scheme: light dark;
-}
-
-table, th, td {
-  border:none;
-  text-align: left;
-}
-
-.vodtable {
-  border: 1px solid black;
-  text-align: left;
-}
-
-.vodtable th, .vodtable td {
-  border: 1px solid black;
-}
-
-.searchtable {
-  border: none;
-}
-
-.searchtable input {
-  width: 100px;
-}
-
-.searchtable p {
-  margin: 0;
-}
-
+{% include "styles.css" %}
 </style>
 </head>
 
@@ -43,10 +10,19 @@ table, th, td {
 
 <h1>Recent VODS</h1>
 
+{% if not is_search %}
+<div class="content-body">
+    {% include "search_table.jinja2" %}
+</div>
+{% endif %}
+
+<div class="content-body">
 {% include "vods_table.jinja2" %}
+</div>
 
 <h1>Submit a VOD</h1>
 
+<div class="content-body">
 <form action="/submission" method="post">
 <label for="url">URL (Twitch or YouTube): </label> <input id="url" name="url" type="text" size="60"/>
 <p>Playlists are allowed.</p>
@@ -124,8 +100,12 @@ table, th, td {
 <input type="submit" value="Submit VOD"/>
 </form>
 
+</div>
+
 <h1>Credits</h1>
 
-{% include "credits.jinja2" %}
+<div class="content-body">
+    {% include "credits.jinja2" %}
+</div>
 
 </body>
