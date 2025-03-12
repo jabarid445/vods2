@@ -8,13 +8,17 @@
 
 <body>
 
+{% if not is_search %}
 <h1>Recent VODS</h1>
 
-{% if not is_search %}
+<p>Last updated March 12 2025.</p>
+{% else %}
+<h1>Search Results</h1>
+{% endif %}
+
 <div class="content-body">
     {% include "search_table.jinja2" %}
 </div>
-{% endif %}
 
 <div class="content-body">
 {% include "vods_table.jinja2" %}

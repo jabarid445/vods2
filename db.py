@@ -53,11 +53,13 @@ def init_db():
         db.executescript(f.read().decode('utf8'))
 
 def get_character_id(name):
-    
     name = name.lower()
-    # Ignore multiple characters for now.
-    name = list(name.split(','))[0]
+
+    # Common nicknames and misspellings.
     if name == 'clarien': name = 'clairen'
+    if name == 'eta': name = 'etalus'
+    if name == 'zetter': name = 'zetterburn'
+    if name == 'fors': name = 'forsburn'
 
     return CHAR_NAME_TO_ID.get(name)
 
