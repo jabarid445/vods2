@@ -372,9 +372,9 @@ def ingest_channel_command(channel_id, query, format):
             published_at = snippet['publishedAt']
             title = snippet['title']
 
-            existing_vod = db.cursor().execute("SELECT id from vod WHERE url = ? LIMIT 1;", (url,)).fetchone()
+            existing_vod = db.cursor().execute("SELECT id, url from vod WHERE url = ? LIMIT 1;", (url,)).fetchone()
             if existing_vod:
-                click.echo(f'{title} is already in the database, skipping VOD.')
+                click.echo(f'{title} is already in the database ({existing_vod['url']}), skipping VOD.')
                 continue
 
             info = format_regex.match(title.strip())
