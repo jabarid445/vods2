@@ -132,24 +132,43 @@ def search_vods(p1, p2, c1, c2, event, amount=200):
     c2_match = '%' + c2 + '%'
     event_match = '%' + event + '%'
 
-    vods = db.cursor().execute("""
-    SELECT vod.id, vod.url, p1.tag, p2.tag, c1.name, c1.icon_url, c2.name, c2.icon_url, e.name, vod.round, vod.vod_date
-    FROM vod
-        INNER JOIN event e ON e.id = vod.event_id
-        INNER JOIN player p1 ON p1.id = vod.p1_id
-        INNER JOIN player p2 ON p2.id = vod.p2_id
-        INNER JOIN game_character c1 ON c1.id = vod.c1_id
-        INNER JOIN game_character c2 ON c2.id = vod.c2_id
-    WHERE
-        (p1.tag LIKE ? OR p2.tag LIKE ?)
-        AND (p1.tag LIKE ? OR p2.tag LIKE ?)
-        AND (c1.name LIKE ? OR c2.name LIKE ?)
-        AND (c1.name LIKE ? OR c2.name LIKE ?)
-        AND (e.name LIKE ?)
-    ORDER BY vod_date DESC
-    LIMIT ?;
-    """, (p1_match, p1_match, p2_match, p2_match, c1_match, c1_match, c2_match, c2_match, event_match, amount,)).fetchall()
-    
+    vods = None
+    if c1 != c2:
+        vods = db.cursor().execute("""
+        SELECT vod.id, vod.url, p1.tag, p2.tag, c1.name, c1.icon_url, c2.name, c2.icon_url, e.name, vod.round, vod.vod_date
+        FROM vod
+            INNER JOIN event e ON e.id = vod.event_id
+            INNER JOIN player p1 ON p1.id = vod.p1_id
+            INNER JOIN player p2 ON p2.id = vod.p2_id
+            INNER JOIN game_character c1 ON c1.id = vod.c1_id
+            INNER JOIN game_character c2 ON c2.id = vod.c2_id
+        WHERE
+            (p1.tag LIKE ? OR p2.tag LIKE ?)
+            AND (p1.tag LIKE ? OR p2.tag LIKE ?)
+            AND (c1.name LIKE ? OR c2.name LIKE ?)
+            AND (c1.name LIKE ? OR c2.name LIKE ?)
+            AND (e.name LIKE ?)
+        ORDER BY vod_date DESC
+        LIMIT ?;
+        """, (p1_match, p1_match, p2_match, p2_match, c1_match, c1_match, c2_match, c2_match, event_match, amount,)).fetchall()
+    else:
+        vods = db.cursor().execute("""
+        SELECT vod.id, vod.url, p1.tag, p2.tag, c1.name, c1.icon_url, c2.name, c2.icon_url, e.name, vod.round, vod.vod_date
+        FROM vod
+            INNER JOIN event e ON e.id = vod.event_id
+            INNER JOIN player p1 ON p1.id = vod.p1_id
+            INNER JOIN player p2 ON p2.id = vod.p2_id
+            INNER JOIN game_character c1 ON c1.id = vod.c1_id
+            INNER JOIN game_character c2 ON c2.id = vod.c2_id
+        WHERE
+            (p1.tag LIKE ? OR p2.tag LIKE ?)
+            AND (p1.tag LIKE ? OR p2.tag LIKE ?)
+            AND (c1.name LIKE ? AND c2.name LIKE ?)
+            AND (e.name LIKE ?)
+        ORDER BY vod_date DESC
+        LIMIT ?;
+        """, (p1_match, p1_match, p2_match, p2_match, c1_match, c1_match, event_match, amount,)).fetchall()
+
     result = []
     for id, url, p1_tag, p2_tag, c1_name, c1_icon_url, c2_name, c2_icon_url, event, round, vod_date in vods:
         result.append(Vod(
