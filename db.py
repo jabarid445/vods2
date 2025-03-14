@@ -59,6 +59,7 @@ def get_character_id(name):
     if name == 'clarien': name = 'clairen'
     if name == 'eta': name = 'etalus'
     if name == 'zetter': name = 'zetterburn'
+    if name == 'zettersburn': name = 'zetterburn'
     if name == 'fors': name = 'forsburn'
 
     return CHAR_NAME_TO_ID.get(name)
