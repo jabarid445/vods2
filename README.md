@@ -87,4 +87,39 @@ To see your changes locally:
 
 ### Adding VODs
 
-TODO
+You can add VODs from a YouTube channel to the database using the following command:
+
+```sh
+python3 -m flask ingest-channel <channel_id> '<search_query>' '<video_title_format>'
+```
+
+where:
+
+- `channel_id` is the YouTube channel ID. I get the ID using [this website](https://www.streamweasels.com/%20tools/youtube-channel-id-and-%20user-id-convertor/).
+  - The channel IDs for the websites I pull from are stored in [`data/channel_ids.txt`](https://github.com/akbiggs/vods2/blob/main/data/channel_ids.txt).
+- `search_query` is an optional query to reduce what videos get queried from the channel. For example if you are trying to get VODs that have the word "Blah" in the title, you can type `'"Blah"'`.
+- `video_title_format` describes the format of the video title (where the event name, the player names, and the character names are).
+  - `%P1`: Where the first player name goes.
+  - `%P2`: Where the second player name goes.
+  - `%C1`: Where the first player's character(s) goes.
+  - `%C2`: Where the second player's character(s) goes.
+  - `%E`: (optional) The event name.
+  - `%R`: (optional) The round name.
+  - `%V`: (optional) Some versus text, for example "vs", "VS", "vs.".
+  - `%ROA`: (optional) Some reference to Rivals of Aether II, for example "RoA2", "Rivals of Aether II", "Rivals 2".
+
+For example, if you want to add Rivals II videos from [Collision Gaming Series](https://www.youtube.com/@CollisionSeries), an example video title is "Bay State Beatdown 138 Rivals 2 - FC | Vidad (Clairen) vs yc | Pip (Maypul) - Grand Finals", and the corresponding command would be:
+
+```sh
+python3 -m flask ingest-channel UCn_LdOLhjFF3_fgBrk-7y9A '""' '%E Rivals 2 - %P1 (%C1) %V %P2 (%C2) - %R'
+```
+
+If you only want VODs from Bay State Beatdown 138, the command would be:
+
+```sh
+python3 -m flask ingest-channel UCn_LdOLhjFF3_fgBrk-7y9A '"Bay State Beatdown 138"' '%E Rivals 2 - %P1 (%C1) %V %P2 (%C2) - %R'
+```
+
+### Hosting
+
+I use [PythonAnywhere](https://www.pythonanywhere.com) to host the site.
