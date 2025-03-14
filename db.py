@@ -171,16 +171,30 @@ def search_vods(p1, p2, c1, c2, event, amount=200):
 
     result = []
     for id, url, p1_tag, p2_tag, c1_name, c1_icon_url, c2_name, c2_icon_url, event, round, vod_date in vods:
-        result.append(Vod(
-            url=url,
-            round=round,
-            p1_tag=p1_tag,
-            p2_tag=p2_tag,
-            c1_icon_url=c1_icon_url,
-            c2_icon_url=c2_icon_url,
-            vod_date=vod_date,
-            event_name=event
-        ))
+        # Make the character order match the search query if it doesn't already.
+        print(f'c2_name={c2_name}, c1={c1}')
+        if c2_name.lower() == c1:
+            result.append(Vod(
+                url=url,
+                round=round,
+                p1_tag=p2_tag,
+                p2_tag=p1_tag,
+                c1_icon_url=c2_icon_url,
+                c2_icon_url=c1_icon_url,
+                vod_date=vod_date,
+                event_name=event
+            ))
+        else:
+            result.append(Vod(
+                url=url,
+                round=round,
+                p1_tag=p1_tag,
+                p2_tag=p2_tag,
+                c1_icon_url=c1_icon_url,
+                c2_icon_url=c2_icon_url,
+                vod_date=vod_date,
+                event_name=event
+            ))
     return result
 
 def parse_date(str):

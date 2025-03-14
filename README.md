@@ -77,10 +77,10 @@ To see your changes locally:
    .venv/bin/activate
    ```
 
-2. Run the site in dev mode. This allows you to refresh and see your changes.
+2. Run the site in debug mode. This allows you to refresh and see your changes.
 
    ```
-   python3 -m flask run --dev
+   python3 -m flask run --debug
    ```
 
 3. Go to http://localhost:5000 to see the site.
