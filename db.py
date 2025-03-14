@@ -393,7 +393,7 @@ def ingest_channel_command(channel_id, query, format):
         if not items:
             return 0
         
-        num_vods = 0
+        results = []
         for item in items:
             # Ignore playlists, just grab videos.
             if not item.get('id') or not item['id'].get('videoId'):
@@ -406,12 +406,12 @@ def ingest_channel_command(channel_id, query, format):
 
             existing_vod = db.cursor().execute("SELECT id from vod WHERE url = ? LIMIT 1;", (url,)).fetchone()
             if existing_vod:
-                click.echo(f'{title} is already in the database, skipping VOD.')
+                click.echo(f'ALREADY PRESENT: {title}')
                 continue
 
             info = format_regex.match(title.strip())
             if not info:
-                click.echo(f'{title} did not match regex, skipping VOD.')
+                click.echo(f'DOES NOT MATCH: {title}')
                 continue
             p1 = info.group('p1')
             p2 = info.group('p2')
@@ -443,26 +443,29 @@ def ingest_channel_command(channel_id, query, format):
                 # click.echo(f"Unknown character {c2} for {url}, skipping VOD.")
                 continue
 
-            click.echo(f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} round={round} vod_date={published_at} url={url}')
+            result = f'p1={p1} c1={c1} p2={p2} c2={c2} event={event} round={round} vod_date={published_at} url={url}'
+            click.echo(result)
+            results.append(result)
 
-            num_vods += 1
             db.cursor().execute("""
                               INSERT INTO vod (game_id, event_id, url, p1_id, p2_id, c1_id, c2_id, vod_date, round)
                               VALUES          (?,       ?,        ?,   ?,     ?,     ?,     ?,     ?,        ?);
                               """, (RIVALS_OF_AETHER_TWO, event_id, url, p1_id, p2_id, c1_id, c2_id, published_at, round,))
         
-        return num_vods
+        return results
 
     
     page = get_page()
-    num_vods = ingest_page(page)
+    results = []
+    results += ingest_page(page)
     while page.get('nextPageToken'):
         page = get_page(page['nextPageToken'])
-        num_vods += ingest_page(page)
+        results += ingest_page(page)
     
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "0"
 
-    response = input(f'Are you sure you want to commit {num_vods} VODs? [y/n] ')
+    click.echo('\n'.join(results))
+    response = input(f'Are you sure you want to commit {len(results)} VODs? [y/n] ')
     if response in ['y', 'yes']:
         db.commit()
     else:
