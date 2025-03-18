@@ -1,3 +1,4 @@
 Elu's Random Stuff: flask ingest-channel UCutAiUCILxrF_HBNNJFWbRg '""' "%E - %R - %P1 (%C1) %V %P2 (%C2)"
 Elu's Random Stuff: flask ingest-channel UCutAiUCILxrF_HBNNJFWbRg '""' "%E - %P1 (%C1) %V %P2 (%C2) - %R"
 Game Arena CBUS: flask ingest-channel UC0i-bU86rDxfW5G-q0HBlDQ '""' "%E RoA2 %R - %P1 (%C1) %V %P2 (%C2)"
+ConduitGaming: flask ingest-channel UCZB5hfz9zh-7dMgBIi6s-WA '""' "%P1 ( %C1 ) %V %P2 ( %C2 ) - [ %R ]"
