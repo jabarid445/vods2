@@ -40,7 +40,7 @@ You only need to do this once.
    On Unix:
 
    ```sh
-   .venv/bin/activate
+   chmod +x .venv/bin/activate && .venv/bin/activate
    ```
 
 6. Install dependencies.
@@ -85,9 +85,31 @@ To see your changes locally:
 
 3. Go to http://localhost:5000 to see the site.
 
-### Adding VODs
+### Adding VODs manually
 
-You can add VODs from a YouTube channel to the database using the following command:
+To add new VODs manually, you can edit `data/vods.csv` to add new rows and then
+run:
+
+```sh
+python3 -m flask ingest-csv data/vods.csv
+```
+
+### Adding VODs from a YouTube channel
+
+Adding VODs from a YouTube channel currently requires the Google Python API
+Client to use YouTube's API.
+
+```sh
+python3 -m pip install google-api-python-client
+```
+
+You also need to
+[get a YouTube API key](https://developers.google.com/youtube/v3/getting-started)
+and put it in a `youtube_api_key` file in the top-level `vods2` folder. Note
+that there is no file extension on `youtube_api_key`.
+
+You can add VODs from a YouTube channel to the database using the following
+command:
 
 ```sh
 python3 -m flask ingest-channel <channel_id> '<search_query>' '<video_title_format>'
@@ -118,6 +140,22 @@ If you only want VODs from Bay State Beatdown 138, the command would be:
 
 ```sh
 python3 -m flask ingest-channel UCn_LdOLhjFF3_fgBrk-7y9A '"Bay State Beatdown 138"' '%E Rivals 2 - %P1 (%C1) %V %P2 (%C2) - %R'
+```
+
+### Exporting VODs list
+
+After verifying the new VODs you can export them to `data/vods.csv` using the
+following command:
+
+```sh
+python3 -m flask export-vods data/vods.csv
+```
+
+On the production site to get the new VODs, I pull the changes to
+`data/vods.csv` and then run:
+
+```sh
+python3 -m flask ingest-csv data/vods.csv
 ```
 
 ### Hosting

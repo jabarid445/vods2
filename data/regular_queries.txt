@@ -1,5 +1,7 @@
+ConduitGaming: flask ingest-channel UCZB5hfz9zh-7dMgBIi6s-WA '""' "%P1 ( %C1 ) %V %P2 ( %C2 ) - [ %R ]"
 Elu's Random Stuff: flask ingest-channel UCutAiUCILxrF_HBNNJFWbRg '""' "%E - %R - %P1 (%C1) %V %P2 (%C2)"
 Elu's Random Stuff: flask ingest-channel UCutAiUCILxrF_HBNNJFWbRg '""' "%E - %P1 (%C1) %V %P2 (%C2) - %R"
 Game Arena CBUS: flask ingest-channel UC0i-bU86rDxfW5G-q0HBlDQ '""' "%E RoA2 %R - %P1 (%C1) %V %P2 (%C2)"
-ConduitGaming: flask ingest-channel UCZB5hfz9zh-7dMgBIi6s-WA '""' "%P1 ( %C1 ) %V %P2 ( %C2 ) - [ %R ]"
-Weird Esports: flask ingest-channel 
+GamersGuild: flask ingest-channel UCScVXk1msI1I1KUktK4BkhQ '""' "%E - %R - %P1 (%C1) %V %P2 (%C2)"
+GamersGuild: flask ingest-channel UCScVXk1msI1I1KUktK4BkhQ '""' "%E -%R - %P1 (%C1) %V %P2 (%C2)"
+Weird Esports: flask ingest-channel UC2KsuYai5viA6jaRKYBls5Q '""' "[%E] %R - %P1 (%C1) %V %P2 (%C2)"
